@@ -94,11 +94,11 @@ private:
     void update_Parity_from_combobox();
 
     void on_Ready_read();
-    void send_message(const QString &arg);
+    void send_message(const QString &arg, QString SendFormat);
 
     void show_Received_data(const QString arg);
     quint64 sentmsglen;
-    void show_Sent_data(std::string msg);
+    void show_Sent_data(std::size_t len);
 
     // Tx Section
     QString SendFormat_1;

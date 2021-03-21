@@ -218,6 +218,10 @@ void MainWindow::initialize_Variables()
 
 //}
 
+/********************************************
+**  RX Section
+**
+********************************************/
 void MainWindow::update_Serial_port_attribute()
 {
     update_Serialport_from_combobox();
@@ -309,12 +313,25 @@ void MainWindow::on_Ready_read()
         QMessageBox::warning(this, ProgramName, "Please open serial port!!");
     }
 }
-void MainWindow::send_message(const QString &arg)
+void MainWindow::send_message(const QString &arg, QString SendFormat)
 {
-    std::string temp = arg.toStdString();
     if(port->isOpen()) {
-        port->write(temp.c_str(),temp.length());
-        show_Sent_data(temp);
+        QByteArray msg = arg.toUtf8();
+        // Check Add_CR_LF
+        if(ui->Add_CR_LF->checkState())
+        {
+            msg = msg + "\r\n";
+        }
+        // Check Send Format
+        if(SendFormat.compare("HEX") == 0)
+        {
+            msg = QByteArray::fromHex(msg);
+        }
+        const std::size_t cnt = msg.size();
+        char* c_msg = new char[cnt];
+        std::memcpy(c_msg, msg.constData(), cnt);
+        port->write(c_msg,cnt);
+        show_Sent_data(cnt);
     }
     else {
         QMessageBox::warning(this, ProgramName, "Please open serial port!!");
@@ -328,10 +345,10 @@ void MainWindow::show_Received_data(const QString arg)
     temp.sprintf("Received Data : Receive %d characters",receiveDataBuffer.size());
     ui->StatusOfReceivedData->setText(temp);
 }
-void MainWindow::show_Sent_data(std::string msg)
+void MainWindow::show_Sent_data(std::size_t len)
 {
     QString temp;
-    sentmsglen = sentmsglen + quint64(msg.length());
+    sentmsglen = sentmsglen + len;
     temp.sprintf("Send Data : Send %d characters",sentmsglen);
     ui->StatusOfSentData->setText(temp);
 }
@@ -342,48 +359,23 @@ void MainWindow::show_Sent_data(std::string msg)
 ********************************************/
 void MainWindow::on_Send_1_clicked()
 {
-    QByteArray msg = ui->lineEdit_1->text().toUtf8();
-    if(SendFormat_1.compare("HEX") == 0)
-    {
-        msg = QByteArray::fromHex(msg);
-    }
-    send_message(msg);
+    send_message(ui->lineEdit_1->text(),SendFormat_1);
 }
 void MainWindow::on_Send_2_clicked()
 {
-    QByteArray msg = ui->lineEdit_2->text().toUtf8();
-    if(SendFormat_2.compare("HEX") == 0)
-    {
-        msg = QByteArray::fromHex(msg);
-    }
-    send_message(msg);
+    send_message(ui->lineEdit_2->text(),SendFormat_2);
 }
 void MainWindow::on_Send_3_clicked()
 {
-    QByteArray msg = ui->lineEdit_3->text().toUtf8();
-    if(SendFormat_3.compare("HEX") == 0)
-    {
-        msg = QByteArray::fromHex(msg);
-    }
-    send_message(msg);
+    send_message(ui->lineEdit_3->text(),SendFormat_3);
 }
 void MainWindow::on_Send_4_clicked()
 {
-    QByteArray msg = ui->lineEdit_4->text().toUtf8();
-    if(SendFormat_4.compare("HEX") == 0)
-    {
-        msg = QByteArray::fromHex(msg);
-    }
-    send_message(msg);
+    send_message(ui->lineEdit_4->text(),SendFormat_4);
 }
 void MainWindow::on_Send_5_clicked()
 {
-    QByteArray msg = ui->lineEdit_5->text().toUtf8();
-    if(SendFormat_5.compare("HEX") == 0)
-    {
-        msg = QByteArray::fromHex(msg);
-    }
-    send_message(msg);
+    send_message(ui->lineEdit_5->text(),SendFormat_5);
 }
 
 void MainWindow::on_SendFormat_1_clicked()
@@ -434,8 +426,10 @@ QString MainWindow::change_SendFormat(QString prev_SendFormat)
     return now_SendFormat;
 }
 
-//
-
+/********************************************
+**  Menubar Actions
+**
+********************************************/
 void MainWindow::action_connect()
 {
 
