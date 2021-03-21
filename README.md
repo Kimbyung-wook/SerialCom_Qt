@@ -7,11 +7,11 @@ http://www.ninety.co.kr/ <br>
 
 본 저장소는 Qt를 공부하는 겸, SerialCom의 UI와 기능을 따라 만들어보도록 하려고 한다.<br>
 
-*** 구현된 기능 ***
+### 구현된 기능 ###
 현재 Rx Section과 Tx Section의 기본 기능이 구현되어있다.<br>
 1초 주기로 사용 가능한 직렬 포트를 검색하여 목록화해주며,<br>
 사용가능한 직렬 포트가 있을 때, 포트를 선택하여 열어볼 수 있다.<br>
 
-## 미구현 기능 ##
+### 미구현 기능 ###
 그러나 Tx Section의 Radio button인 "Auto", Check box인 "Send Data Repeatly"의 기능은 구현되어있지 않다.<br>
 또한 menubar의 action들은 구현되어있지 않다.<br>
