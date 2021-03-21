@@ -36,6 +36,11 @@ void MainWindow::scanSerialPort()
     {
         ui->SerialPort->addItem(ports.portName());
     }
+    if(ui->SerialPort->count() < m_SerialPort_idx)
+    {
+        m_SerialPort_idx = -1;
+    }
+    ui->SerialPort->setCurrentIndex(m_SerialPort_idx);
     if(port->isOpen() == false){
         if(ui->SerialPort->count()>0){
             ui->OpenPort->setEnabled(true);
@@ -158,12 +163,12 @@ void MainWindow::on_Parity_activated(int index)
 
 void MainWindow::initialize_ComboBox()
 {
-    QString temp;
-    temp.sprintf("Size of Items : %d\n",ui->SerialPort->count());
-    receiveDataBuffer.append(temp);
+//    QString temp;
+//    temp.sprintf("Size of Items : %d\n",ui->SerialPort->count());
+//    receiveDataBuffer.append(temp);
     if(ui->SerialPort->count()>0)
     {
-        ui->SerialPort->setCurrentIndex(0);
+        ui->SerialPort->setCurrentIndex(m_SerialPort_idx);
         update_Serialport_from_combobox();
     }
     ui->Baudrate->setCurrentIndex(8);
@@ -209,13 +214,12 @@ void MainWindow::initialize_Variables()
 {
     ProgramName = "QSerialCom";
     sentmsglen = 0;
+    m_SerialPort_idx = 0;
 }
 //void MainWindow::initialize_Actions()
 //{
 //    QAction* qAction_exit = new QAction(tr("actionExit"), this);
 //    connect(qAction_exit, SIGNAL(triggered()), this, SLOT(action_exit));
-
-
 //}
 
 /********************************************
@@ -232,6 +236,7 @@ void MainWindow::update_Serial_port_attribute()
 }
 void MainWindow::update_Serialport_from_combobox()
 {
+    m_SerialPort_idx = ui->SerialPort->currentIndex();
     QString temp = ui->SerialPort->currentText();
 #ifdef Q_OS_LINUX
     m_SerialPort = "/dev/" + temp;  // linux
@@ -301,7 +306,14 @@ void MainWindow::update_Parity_from_combobox()
 void MainWindow::on_Ready_read()
 {
     if(port->isOpen()) {
+//        int maxlen = 1000;
+//        char *temp;
+//        int msglen = 0;
+//        QByteArray msg;
+//        msglen = port->read(temp,maxlen);
+//        msg = QByteArray::fromRawData(temp,msglen);
         QByteArray msg = port->readAll();
+
         QString RxFormat = ui->RxFormat->currentText();
         if(RxFormat.compare("HEX") == 0)
         {

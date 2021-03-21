@@ -27,6 +27,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    int m_SerialPort_idx;
     QString m_SerialPort;
     QSerialPort::BaudRate m_Baudrate;
     QSerialPort::DataBits m_DataBits;
