@@ -4,6 +4,7 @@
 #include <QSerialPortInfo>
 #include <QSysInfo>
 #include <QTimer>
+#include <QScrollBar>
 #include <cmath>
 //#define SHOW_SERIALPORT_ATTRIBUTE
 MainWindow::MainWindow(QWidget *parent)
@@ -354,6 +355,9 @@ void MainWindow::show_Received_data(const QString arg)
     QString temp;
     receiveDataBuffer.append(arg);
     ui->textBrowser->setText(receiveDataBuffer);
+    QScrollBar *sb = ui->textBrowser->verticalScrollBar();
+    sb->setValue(sb->maximum());
+    sb = NULL;
     temp.sprintf("Received Data : Receive %d characters",receiveDataBuffer.size());
     ui->StatusOfReceivedData->setText(temp);
 }
